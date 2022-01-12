@@ -52,12 +52,12 @@ class App implements InstanceInterface
     // Todoo: Facades
     public function path($path = '')
     {
-        return $this->path . $path;
+        return APP_ROOT . $this->path . $path;
     }
 
     public function systemPath($path = '')
     {
-        return 'System/App/' . $path;
+        return SYS . 'App/' . $path;
     }
 
     public function find($path)

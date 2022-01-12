@@ -75,7 +75,7 @@ class Kernel
     public function loadRoutes()
     {
         foreach (Env::get('routes', []) as $route) {
-            include_once ROOT . $route . EXT;
+            include_once APP_ROOT . $route . EXT;
         }
     }
 
@@ -127,6 +127,17 @@ class Kernel
         }
     }
 
+    public function buildFqClassName(string $filePath, string $className)
+    {
+        $fqClass = "";
+        if (is_int(strpos($filePath, "core"))) {
+            return 'System\App\Controllers' . $className;
+        }
+        $fqClass = 'App\Controllers\\' . $className;
+
+        return str_replace('/', '\\', $fqClass . 'Controller');
+    }
+
     /**
      * @param $route
      * @return array
@@ -144,16 +155,16 @@ class Kernel
                 $this->app->path(), // default path
                 $this->app->systemPath(),
             ];
-
+            
             // Primitive controllers loader
             foreach ($folders as $folder) {
                 $full = $folder . 'Controllers/' . $class;
-                $full_class = str_replace('/', '\\', $full . 'Controller');
                 $full_path = $full . 'Controller' . EXT;
-
+                $full_class = $this->buildFqClassName($full_path, $class);
+                
                 if (file_exists($full_path)) {
+                    
                     include_once $full_path;
-
                     // Prepare controller
                     $c = new $full_class;
 
@@ -164,7 +175,6 @@ class Kernel
                     throw new NotFoundException("Action not found {$method}@{$class}");
                 }
             }
-
             throw new NotFoundException("Controller not found: {$method}@{$class}");
         }
     }

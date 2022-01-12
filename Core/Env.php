@@ -25,8 +25,8 @@ class Env
      */
     public static function construct()
     {
-        self::$name = $envtype = file_get_contents(ROOT . '.env');
-        $envfile = ROOT . $envtype . '.env' . EXT;
+        self::$name = $envtype = file_get_contents(APP_ROOT . '.env');
+        $envfile = APP_ROOT . $envtype . '.env' . EXT;
 
         if (!is_file($envfile)) {
             exit("Env {$envtype} not found!");
@@ -87,7 +87,7 @@ class Env
     private static function readConfiguration()
     {
         $config = [];
-        $file_list = scandir(ROOT . 'Config/');
+        $file_list = scandir(APP_ROOT . 'Config/');
 
         foreach ($file_list as $file) {
             if ($file == '.' or $file == '..') {
@@ -95,7 +95,7 @@ class Env
             }
 
             $name = strtolower(substr($file, 0, -4));
-            $config[ $name ] = include ROOT . 'Config/' . $file;
+            $config[ $name ] = include APP_ROOT . 'Config/' . $file;
         }
 
         return $config;
